@@ -1,2 +1,2 @@
-# restful_maps
-Implementation of a plugin to add custom metaboxes to any post in order to associate it with a map marker on Google Maps
+# RESTful Maps
+Add custom metaboxes to any post to associate it with a map marker on Google Maps and access them through a WP-REST API endpoint.
