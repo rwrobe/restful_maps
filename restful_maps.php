@@ -21,8 +21,8 @@
 namespace notne\rmaps;
 
 
-//require_once 'src/RESTful_Maps.php';
-//$rmaps = new RESTful_Maps( __FILE__ );
+require_once 'src/RESTful_Maps.php';
+$rmaps = new RESTful_Maps( __FILE__ );
 
 require_once 'src/Pins.php';
 $rmaps = new Pins( __FILE__ );

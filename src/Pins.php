@@ -18,9 +18,11 @@ class Pins {
 	protected $textdomain;
 	protected $taxonomies;
 	protected $posts;
+	protected $file;
 
 	public function __construct( $file )	{
 		$this->textdomain	= 'rmaps';
+		$this->file         = $file;
 		$this->posts		= array();
 		$this->taxonomies 	= array();
 
@@ -69,7 +71,7 @@ class Pins {
 
 
 		// Store the settings in the post array
-		$this->posts['pins'] = $settings;
+		$this->posts['pin'] = $settings;
 
 	}
 
@@ -78,55 +80,70 @@ class Pins {
 		foreach( $this->posts as $key=>$value )
 			register_post_type( $key, $value );
 
-		$opts = array (
-			'id' => 'acf_location',
-			'title' => 'Location',
-			'fields' => array (
-				array (
-					'key' => 'field_56b610ff22aed',
-					'label' => 'Location',
-					'name' => 'location',
-					'type' => 'google_map',
-					'required' => 1,
-					'center_lat' => '',
-					'center_lng' => '',
-					'zoom' => '',
-					'height' => '',
-				),
-			),
-			'location' => array (
-				array (
-					array (
-						'param' => 'post_type',
-						'operator' => '==',
-						'value' => 'pins',
-						'order_no' => 0,
-						'group_no' => 0,
+		if( class_exists( 'acf' ) ) {
+			$opts = array(
+				'id'         => 'acf_latitudelongitude',
+				'title'      => 'Latitude/Longitude',
+				'fields'     => array(
+					array(
+						'key'           => 'field_56b70ac065fef',
+						'label'         => 'Latitude',
+						'name'          => 'latitude',
+						'type'          => 'text',
+						'required'      => 1,
+						'default_value' => '',
+						'placeholder'   => '16.7758N',
+						'prepend'       => '',
+						'append'        => '',
+						'formatting'    => 'html',
+						'maxlength'     => '',
+					),
+					array(
+						'key'           => 'field_56b70ae565ff0',
+						'label'         => 'Longitude',
+						'name'          => 'longitude',
+						'type'          => 'text',
+						'required'      => 1,
+						'default_value' => '',
+						'placeholder'   => '3.0094W',
+						'prepend'       => '',
+						'append'        => '',
+						'formatting'    => 'html',
+						'maxlength'     => '',
 					),
 				),
-			),
-			'options' => array (
-				'position' => 'acf_after_title',
-				'layout' => 'no_box',
-				'hide_on_screen' => array (
-					0 => 'permalink',
-					1 => 'the_content',
-					2 => 'excerpt',
-					3 => 'custom_fields',
-					4 => 'discussion',
-					5 => 'comments',
-					6 => 'revisions',
-					7 => 'slug',
-					8 => 'author',
-					9 => 'format',
-					10 => 'send-trackbacks',
+				'location'   => array(
+					array(
+						array(
+							'param'    => 'post_type',
+							'operator' => '==',
+							'value'    => 'pin',
+							'order_no' => 0,
+							'group_no' => 0,
+						),
+					),
 				),
-			),
-			'menu_order' => 0,
-		);
+				'options'    => array(
+					'position'       => 'normal',
+					'layout'         => 'no_box',
+					'hide_on_screen' => array(
+						0 => 'permalink',
+						1 => 'excerpt',
+						2 => 'custom_fields',
+						3 => 'discussion',
+						4 => 'comments',
+						5 => 'revisions',
+						6 => 'slug',
+						7 => 'author',
+						8 => 'format',
+						9 => 'send-trackbacks',
+					),
+				),
+				'menu_order' => 0,
+			);
 
-		if( class_exists( 'acf' ) )
 			register_field_group( $opts );
+		}
 
 		/** @todo Add lat./lon., city or country metaboxes if ACF not present */
 	}

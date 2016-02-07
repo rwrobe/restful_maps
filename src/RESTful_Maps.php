@@ -17,8 +17,21 @@ class RESTful_Maps {
 	public $file = '';
 
 	public function __construct( $file ) {
-		register_activation_hook();
-		add_action( 'rest_api_init', 'register_api_hooks' );
+		$this->file = $file;
+
+		add_action( 'rest_api_init', array( &$this, 'register_api_hooks' ) );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueues' ) );
+	}
+
+	public function enqueues(){
+		/** Bail if not the Pins PT */
+		global $post;
+
+		if( 'pin' != get_post_type( $post ) )
+			return;
+
+		wp_enqueue_style( 'rmaps-styles', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/css/restful_maps.css', false );
+		wp_enqueue_script( 'rmaps-appjs', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/js/app.js', '1.0', true );
 	}
 
 	public function register_api_hooks() {
