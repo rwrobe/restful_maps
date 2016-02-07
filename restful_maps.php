@@ -59,6 +59,6 @@ function rmaps_shortcode( $atts ) {
 }
 
 /** Add a template tag */
-function rmaps_template_tag( $height, $width ){
+function rmaps_template_tag( $height='500', $width='320' ){
 	return '<div id="rmap" style="height:' . $height . 'px; width:' . $width . 'px;"></div>';
 }
