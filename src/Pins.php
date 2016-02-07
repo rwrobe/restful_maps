@@ -18,21 +18,19 @@ class Pins {
 	protected $textdomain;
 	protected $taxonomies;
 	protected $posts;
-	protected $file;
 
-	public function __construct( $file )	{
+	public function __construct()	{
 		$this->textdomain	= 'rmaps';
-		$this->file         = $file;
 		$this->posts		= array();
 		$this->taxonomies 	= array();
 
 		// Add the action hooks
 		add_action( 'init', array( &$this, 'register_pins' ) ); // Register Custom Post Type
-
-		register_deactivation_hook( $file, 'flush_rewrite_rules' );
-		register_activation_hook( $file, 'flush_rewrites' );
-
 		$this->pins_init();
+
+		register_activation_hook( RM_BASE_FILE, 'flush_rewrites' );
+		register_deactivation_hook( RM_BASE_FILE, 'flush_rewrite_rules' );
+
 
 	}
 
@@ -80,6 +78,7 @@ class Pins {
 		foreach( $this->posts as $key=>$value )
 			register_post_type( $key, $value );
 
+		/** Add metaboxes for Latitude and Longitude the lazy way */
 		if( class_exists( 'acf' ) ) {
 			$opts = array(
 				'id'         => 'acf_latitudelongitude',
@@ -174,3 +173,5 @@ class Pins {
 	}
 
 }
+
+$pins = new Pins();

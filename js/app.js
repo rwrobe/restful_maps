@@ -1,7 +1,7 @@
 /**
  * jQuery App the consumes the RMaps REST endpoint for lat./long. and basic post data
  *
- * response from the get_pins endpoint looks like this: ['ID', 'title', 'permalink', 'lat', 'lon']
+ * Response from the get_pins endpoint looks like this: ['ID', 'title', 'infowindow', 'see_more', 'permalink', 'lat', 'lon', 'current']
  */
 ;var RMaps = (function($){
     var rmap = document.getElementById('rmap'),
@@ -66,12 +66,25 @@
     };
 
     var render_pin = function(){
-        var marker, i;
+
+        var color = "9A9A9A",
+            marker, i;
 
         $.each(pins, function(i, pin){
+
+            /** Color the current pin green */
+            if(pin.ID === pin.current)
+                color = '34BA46';
+
+            var pinImg = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color,
+                new google.maps.Size(21, 34),
+                new google.maps.Point(0,0),
+                new google.maps.Point(10, 34));
+
             marker = new google.maps.Marker({
                 position: new google.maps.LatLng(pin.lat, pin.lon),
-                map: map
+                map: map,
+                icon: pinImg
             });
 
             /** Set the infowindow content */

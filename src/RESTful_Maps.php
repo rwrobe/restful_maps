@@ -14,11 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class RESTful_Maps {
 
 	/** @var string Plugin file location passed through the constructor */
-	public $file = '';
 	public $textdomain = '';
 
-	public function __construct( $file ) {
-		$this->file = $file;
+	public function __construct() {
 		$this->textdomain = 'rmaps';
 
 		add_action( 'rest_api_init', array( &$this, 'register_api_routes' ) );
@@ -32,11 +30,11 @@ class RESTful_Maps {
 		if( 'pin' != get_post_type( $post ) )
 			return;
 
-		wp_enqueue_style( 'rmaps-styles', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/css/restful_maps.css', false );
+		wp_enqueue_style( 'rmaps-styles', RM_BASE_DIR . '/css/restful_maps.css', false );
 		if( ! wp_script_is( 'jquery' ) )
 			wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'rmaps-google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . get_option( 'gmaps_api' ), true );
-		wp_enqueue_script( 'rmaps-appjs', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/js/app.js', array( 'jquery' ), '1.0', true );
+		wp_enqueue_script( 'rmaps-appjs', RM_BASE_DIR . '/js/app.js', array( 'jquery' ), '1.0', true );
 	}
 
 	public function register_api_routes() {
@@ -55,30 +53,31 @@ class RESTful_Maps {
 
 	public function get_pins(){
 		if ( 0 || false === ( $return = get_transient( 'rmaps_all_posts' ) ) ) {
+
 			$query = apply_filters( 'rmaps_get_posts_query', array(
 				'numberposts' => 20,
 				'post_type'   => 'pin',
 				'post_status' => 'publish',
 			) );
 
-			$posts  = get_posts( $query );
+			$pins  = get_posts( $query );
 			$return = array();
 
-			foreach ( $posts as $post ) {
+			foreach ( $pins as $pin ) {
 				$return[] = array(
-					'ID'        => $post->ID,
-					'title'     => esc_attr( $post->post_title ),
-					'infowindow'=> wp_kses_post( $post->post_content ),
+					'ID'        => $pin->ID,
+					'title'     => esc_attr( $pin->post_title ),
+					'infowindow'=> wp_kses_post( $pin->post_content ),
 					'see_more'  => _x( 'See More', 'Link', $this->textdomain ),
-					'permalink' => esc_url( get_permalink( $post->ID ) ),
-					'lat'       => esc_attr( get_post_meta( $post->ID, 'latitude', true ) ),
-					'lon'       => esc_attr( get_post_meta( $post->ID, 'longitude', true ) )
+					'permalink' => esc_url( get_permalink( $pin->ID ) ),
+					'lat'       => esc_attr( get_post_meta( $pin->ID, 'latitude', true ) ),
+					'lon'       => esc_attr( get_post_meta( $pin->ID, 'longitude', true ) )
 				);
 
 			}
 
-			/** Cache the query for 10 minutes */
-			set_transient( 'rmaps_all_posts', $return, apply_filters( 'rmaps_posts_ttl', 60 * 10 ) );
+			/** Cache the query for 3 minutes */
+			set_transient( 'rmaps_all_posts', $return, apply_filters( 'rmaps_posts_ttl', 60 * 3 ) );
 
 		}
 
@@ -92,3 +91,5 @@ class RESTful_Maps {
 		return get_option( 'gmaps_api' );
 	}
 }
+
+$rmaps = new RESTful_Maps();

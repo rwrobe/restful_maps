@@ -21,10 +21,18 @@
 namespace notne\rmaps;
 
 
-require_once 'src/RESTful_Maps.php';
-$rmaps = new RESTful_Maps( __FILE__ );
+if ( ! defined( 'RM_BASE_FILE' ) )
+	define( 'RM_BASE_FILE', __FILE__ );
+if ( ! defined( 'RM_BASE_DIR' ) )
+	define( 'RM_BASE_DIR',  WP_PLUGIN_URL . '/' . dirname( plugin_basename( RM_BASE_FILE ) ) );
+if ( ! defined( 'RM_PLUGIN_URL' ) )
+	define( 'RM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
+/** Add the Pins CPT */
 require_once 'src/Pins.php';
-$rmaps = new Pins( __FILE__ );
 
+/** Add the REST endpoints */
+require_once 'src/RESTful_Maps.php';
+
+/** Add an admin page */
 require_once 'rmaps-options.php';
