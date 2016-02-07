@@ -45,8 +45,8 @@
     };
 
     var render_pin = function(){
-        pins.each(function(){
-            console.log('This lat: ' + this.lat + '; This lon: ' + this.lon );
+        $.each(pins, function(i, pin){
+            console.log('This lat: ' + pin.lat + '; This lon: ' + pin.lon );
         });
     };
 
