@@ -74,11 +74,10 @@
                 map: map
             });
 
-            bounds.extend(marker.position);
-
             /** Set the infowindow content */
-            var iwContent = "<h1 class='iw-title'>" + pin.title + "</h1>" +
-                "<p class='iw-body'><a href='" + pin.permalink + "' alt='" + pin.title + "'>See more</a></p>";
+            var iwContent = "<h1 class='rm-title'>" + pin.title + "</h1>" +
+                "<p class='rm-body'>" + pin.infowindow + "</p>" +
+                "<a href='" + pin.permalink + "' alt='" + pin.title + "' class='rm-see-more'>" + pin.see_more + "</a>";
 
             google.maps.event.addListener(marker, 'click', (function(marker, i) {
                 return function() {
@@ -86,6 +85,10 @@
                     infoWindow.open(map, marker);
                 }
             })(marker, i));
+
+            /** Extend the map window bounds so all markers are visible */
+            bounds.extend(marker.position);
+            map.fitBounds(bounds);
         });
     };
 

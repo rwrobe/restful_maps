@@ -15,9 +15,11 @@ class RESTful_Maps {
 
 	/** @var string Plugin file location passed through the constructor */
 	public $file = '';
+	public $textdomain = '';
 
 	public function __construct( $file ) {
 		$this->file = $file;
+		$this->textdomain = 'rmaps';
 
 		add_action( 'rest_api_init', array( &$this, 'register_api_routes' ) );
 		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueues' ) );
@@ -67,6 +69,7 @@ class RESTful_Maps {
 					'ID'        => $post->ID,
 					'title'     => esc_attr( $post->post_title ),
 					'infowindow'=> wp_kses_post( $post->post_content ),
+					'see_more'  => _x( 'See More', 'Link', $this->textdomain ),
 					'permalink' => esc_url( get_permalink( $post->ID ) ),
 					'lat'       => esc_attr( get_post_meta( $post->ID, 'latitude', true ) ),
 					'lon'       => esc_attr( get_post_meta( $post->ID, 'longitude', true ) )
