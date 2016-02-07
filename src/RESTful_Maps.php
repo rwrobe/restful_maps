@@ -65,10 +65,11 @@ class RESTful_Maps {
 			foreach ( $posts as $post ) {
 				$return[] = array(
 					'ID'        => $post->ID,
-					'title'     => $post->post_title,
-					'permalink' => get_permalink( $post->ID ),
-					'lat'       => get_post_meta( $post->ID, 'latitude', true ),
-					'lon'       => get_post_meta( $post->ID, 'longitude', true )
+					'title'     => esc_attr( $post->post_title ),
+					'infowindow'=> wp_kses_post( $post->post_content ),
+					'permalink' => esc_url( get_permalink( $post->ID ) ),
+					'lat'       => esc_attr( get_post_meta( $post->ID, 'latitude', true ) ),
+					'lon'       => esc_attr( get_post_meta( $post->ID, 'longitude', true ) )
 				);
 
 			}
