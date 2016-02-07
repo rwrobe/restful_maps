@@ -19,7 +19,7 @@ class RESTful_Maps {
 	public function __construct( $file ) {
 		$this->file = $file;
 
-		add_action( 'rest_api_init', array( &$this, 'register_api_hooks' ) );
+		add_action( 'rest_api_init', array( &$this, 'register_api_routes' ) );
 		add_action( 'wp_enqueue_scripts', array( &$this, 'enqueues' ) );
 	}
 
@@ -31,20 +31,22 @@ class RESTful_Maps {
 			return;
 
 		wp_enqueue_style( 'rmaps-styles', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/css/restful_maps.css', false );
-		wp_enqueue_script( 'rmaps-appjs', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/js/app.js', '1.0', true );
+		if( ! wp_script_is( 'jquery' ) )
+			wp_enqueue_script( 'jquery' );
+		wp_enqueue_script( 'rmaps-appjs', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/js/app.js', array( 'jquery' ), '1.0', true );
 	}
 
-	public function register_api_hooks() {
+	public function register_api_routes() {
 		$namespace = 'restful-maps/v1';
 
 		register_rest_route( $namespace, '/get-pins/', array(
 			'methods'  => 'GET',
-			'callback' => 'get_pins',
+			'callback' => array( &$this, 'get_pins' ),
 		) );
 	}
 
-	public static function get_pins(){
-		if ( 0 || false === ( $return = get_transient( 'rmaps_all_posts' ) ) ) {
+	public function get_pins(){
+		/*if ( 0 || false === ( $return = get_transient( 'rmaps_all_posts' ) ) ) {
 			$query = apply_filters( 'rmaps_get_posts_query', array(
 				'numberposts' => 20,
 				'post_type'   => 'pin',
@@ -64,9 +66,18 @@ class RESTful_Maps {
 				);
 			}
 
-			/** Cache the query for 10 minutes */
+			/** Cache the query for 10 minutes
 			set_transient( 'rmaps_all_posts', $return, apply_filters( 'rmaps_posts_ttl', 60 * 10 ) );
-		}
+
+		} */
+
+		$return = array(
+			'ID'        => '101',
+			'title'     => 'Title',
+			'permalink' => 'http://url.com',
+			'lat'       => '101.1N',
+			'lon'       => '202.2W'
+		);
 
 		$response = new WP_REST_Response( $return );
 		$response->header( 'Access-Control-Allow-Origin', apply_filters( 'rmaps_access_control_allow_origin', '*' ) );
