@@ -52,7 +52,7 @@
         bounds = new google.maps.LatLngBounds();
         infoWindow = new google.maps.InfoWindow();
 
-        $rmap.empty().css({'width' : '100%', 'height' : '100%'});
+        $rmap.empty();
 
         map = new google.maps.Map(rmap, {
             zoom: 4,
