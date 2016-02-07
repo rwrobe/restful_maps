@@ -43,6 +43,11 @@ class RESTful_Maps {
 			'methods'  => 'GET',
 			'callback' => array( &$this, 'get_pins' ),
 		) );
+
+		register_rest_route( $namespace, '/get-api-key/', array(
+			'methods'  => 'GET',
+			'callback' => array( &$this, 'get_maps_api_key' ),
+		) );
 	}
 
 	public function get_pins(){
@@ -76,5 +81,9 @@ class RESTful_Maps {
 		$response->header( 'Access-Control-Allow-Origin', apply_filters( 'rmaps_access_control_allow_origin', '*' ) );
 
 		return $response;
+	}
+
+	public function get_maps_api_key(){
+		return get_option( 'gmaps_api' );
 	}
 }

@@ -6,8 +6,10 @@
             api_base: '',
             endpoints: {
                 pins: {route: 'get-pins/', method: 'GET'},
+                api_key: {route: 'get-api-key/', method: 'GET'}
             }
-        };
+        },
+        maps_api_key;
 
     var init = function(){
 
@@ -17,8 +19,17 @@
 
         api_settings.api_base = baseUrl + '/wp-json/restful-maps/v1/';
 
-        init_rmaps();
+        get_api_key();
+    };
 
+    var get_api_key = function(){
+        var api_key = '';
+
+        do_ajax(api_settings.endpoints.api_key, {})
+            .done(function(data) {
+                maps_api_key = data;
+                init_rmaps();
+            });
     };
 
     var get_pins = function(callback) {
@@ -28,7 +39,7 @@
                 if ('function' === typeof callback) {
                     callback.call();
                 }
-            } );
+            });
     };
 
     var init_rmaps = function() {
@@ -51,11 +62,11 @@
     };
 
     var do_ajax = function(endpoint, data) {
-        return $.ajax( {
+        return $.ajax({
             url: api_settings.api_base + endpoint.route,
             method: endpoint.method,
             data: data
-        } );
+        });
     };
 
     /** Public API */

@@ -26,3 +26,5 @@ $rmaps = new RESTful_Maps( __FILE__ );
 
 require_once 'src/Pins.php';
 $rmaps = new Pins( __FILE__ );
+
+require_once 'rmaps-options.php';
