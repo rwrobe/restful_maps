@@ -33,6 +33,7 @@ class RESTful_Maps {
 		wp_enqueue_style( 'rmaps-styles', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/css/restful_maps.css', false );
 		if( ! wp_script_is( 'jquery' ) )
 			wp_enqueue_script( 'jquery' );
+		wp_enqueue_script( 'rmaps-google-maps-api', 'https://maps.googleapis.com/maps/api/js?key=' . get_option( 'gmaps_api' ), true );
 		wp_enqueue_script( 'rmaps-appjs', WP_PLUGIN_URL . '/' . dirname( plugin_basename( $this->file ) ) . '/js/app.js', array( 'jquery' ), '1.0', true );
 	}
 

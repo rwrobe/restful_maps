@@ -1,6 +1,11 @@
-/** jQuery App the consumes the RMaps REST endpoint for lat./long. and basic post data */
+/**
+ * jQuery App the consumes the RMaps REST endpoint for lat./long. and basic post data
+ *
+ * response from the get_pins endpoint looks like this: ['ID', 'title', 'permalink', 'lat', 'lon']
+ */
 ;var RMaps = (function($){
-    var $rmaps = $(document.getElementsByClassName('rmaps')),
+    var rmap = document.getElementById('rmap'),
+        $rmap = $(rmap),
         pins = {},
         api_settings = {
             api_base: '',
@@ -9,7 +14,8 @@
                 api_key: {route: 'get-api-key/', method: 'GET'}
             }
         },
-        maps_api_key;
+        maps_api_key,
+        map, bounds, infoWindow;
 
     var init = function(){
 
@@ -43,21 +49,43 @@
     };
 
     var init_rmaps = function() {
-        $rmaps.empty();
-        /*$.each( getLS( 'readingList' ), function( i, ID ) {
-            $.each( posts, function( i, post ) {
-                if ( post.ID === ID ) {
-                    addReadingListElem( post );
-                }
-            } );
-        } );*/
+        bounds = new google.maps.LatLngBounds();
+        infoWindow = new google.maps.InfoWindow();
+
+        $rmap.empty().css({'width' : '100%', 'height' : '100%'});
+
+        map = new google.maps.Map(rmap, {
+            zoom: 4,
+            center: new google.maps.LatLng(16.7758, 3.0094),
+            scrollwheel: false,
+            mapTypeId: google.maps.MapTypeId.SATELLITE
+        });
 
         get_pins(render_pin);
+
     };
 
     var render_pin = function(){
+        var marker, i;
+
         $.each(pins, function(i, pin){
-            console.log('This lat: ' + pin.lat + '; This lon: ' + pin.lon );
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(pin.lat, pin.lon),
+                map: map
+            });
+
+            bounds.extend(marker.position);
+
+            /** Set the infowindow content */
+            var iwContent = "<h1 class='iw-title'>" + pin.title + "</h1>" +
+                "<p class='iw-body'><a href='" + pin.permalink + "' alt='" + pin.title + "'>See more</a></p>";
+
+            google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                    infoWindow.setContent(iwContent);
+                    infoWindow.open(map, marker);
+                }
+            })(marker, i));
         });
     };
 
