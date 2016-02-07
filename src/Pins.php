@@ -140,10 +140,20 @@ class Pins {
 		flush_rewrite_rules();
 	}
 
-	public static function get_pins(){
-		$query_args = array(
-			
+	public static function get_pins( $args ){
+		$defaults = array(
+			'numberposts' => 5,
+			'category' => 0, 'orderby' => 'date',
+			'order' => 'DESC', 'include' => array(),
+			'exclude' => array(), 'meta_key' => '',
+			'meta_value' =>'', 'post_type' => 'pin',
+			'suppress_filters' => true
 		);
+
+		$p = wp_parse_args( $args, $defaults );
+
+		$get_pins = new WP_Query;
+		return $get_pins->query( $p );
 	}
 
 }
